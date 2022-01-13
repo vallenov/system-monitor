@@ -21,3 +21,14 @@ class Monitor:
         temp_list = list(map(lambda t: int(t), temp_list))
         temp = (sum(temp_list) // len(temp_list)) // 1000
         return temp
+
+    @staticmethod
+    def get_used_space() -> int:
+        output = sb.check_output(r"df -h | grep '/\n' | awk '{print $6, $5}'", shell=True)
+        output = output.decode().split('\n')
+        output = list(filter(lambda line: len(line) > 0, output))
+        out_dict = {}
+        for mount_point in output:
+            tmp = mount_point.split()
+            out_dict[tmp[0]] = int(tmp[1][:-1])
+        return out_dict
