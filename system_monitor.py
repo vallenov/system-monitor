@@ -28,7 +28,7 @@ def check_temperature():
         data = dict()
         data['to'] = conf.get('CONTACT', 'telegram_name')
         name = Monitor.get_name_of_machine()
-        data['text'] = f'Температура {name} выше {max_temp}°C'
+        data['text'] = f'Температура {name} сейчас: {temp}°C'
         send_message(data)
         logging.info('Send successful')
         Monitor.block_message['temperature'] = True
