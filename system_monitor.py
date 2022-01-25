@@ -5,6 +5,8 @@ import time
 
 from monitor_classes import Monitor
 
+MAX_TRY = 15
+
 
 def load_config():
     config = configparser.ConfigParser()
@@ -12,14 +14,38 @@ def load_config():
     return config
 
 
+def ini_save(config_inf):
+    '''
+    Сохранение изменений в іnі-файл
+    '''
+    with open(f'system_monitor.ini', 'w') as f:
+        config_inf.write(f)
+
+
 conf = load_config()
 
 
 def send_message(data: dict):
-    requests.post(conf.get('URL', 'message_server_address'), data=data, headers={'Connection': 'close'})
+    """
+    Отправка сообщения админу
+
+    """
+    current_try = 0
+    while current_try < MAX_TRY:
+        current_try += 1
+        try:
+            requests.post(conf.get('URL', 'message_server_address'), data=data, headers={'Connection': 'close'})
+        except Exception as exc:
+            logging.exception(_ex)
+        else:
+            logging.info('Send successful')
+    logging.error('Max try exceeded')
 
 
 def check_temperature():
+    """
+    Проверка превышения заданной температуры
+    """
 
     max_temp = int(conf.get('MAX_VALUES', 'max_temp'))
 
@@ -37,6 +63,9 @@ def check_temperature():
 
 
 def check_used_space():
+    """
+    Проверка оставшегося свободного места на жестком диске
+    """
     max_used_space = int(conf.get('MAX_VALUES', 'max_used_space'))
     used_space = Monitor.get_used_space()
     name = Monitor.get_name_of_machine()
@@ -51,6 +80,27 @@ def check_used_space():
             Monitor.block_message[f'used_spase{key}'] = False
 
 
+def check_ip():
+    """
+    Проверка изменения IP-адреса
+    """
+    old_ip = None
+    if conf.has_option('SETTINGS', 'self_ip'):
+        old_ip = conf.get('SETTINGS', 'self_ip')
+    new_ip = Monitor.get_self_ip()
+    if old_ip is None:
+        conf.set('SETTINGS', 'self_ip', new_ip)
+        ini_save(conf)
+    else:
+        if new_ip == old_ip:
+            return
+    name = Monitor.get_name_of_machine()
+    data = dict()
+    data['to'] = conf.get('CONTACT', 'telegram_name')
+    data['text'] = f'Новый IP-адрес {name}: {new_ip}'
+    send_message(data)
+
+
 if __name__ == "__main__":
     logging.basicConfig(filename='run.log',
                         level=logging.INFO,
@@ -59,8 +109,11 @@ if __name__ == "__main__":
     while True:
         try:
             conf = load_config()
+
             check_temperature()
             check_used_space()
+            check_ip()
+
         except Exception as _ex:
             logging.exception(f'Unrecognized exception {_ex}')
 

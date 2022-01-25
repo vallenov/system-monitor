@@ -23,7 +23,7 @@ class Monitor:
         return temp
 
     @staticmethod
-    def get_used_space() -> int:
+    def get_used_space() -> dict:
         output = sb.check_output(r"df -h | grep '/\n' | awk '{print $6, $5}'", shell=True)
         output = output.decode().split('\n')
         output = list(filter(lambda line: len(line) > 0, output))
@@ -32,3 +32,15 @@ class Monitor:
             tmp = mount_point.split()
             out_dict[tmp[0]] = int(tmp[1][:-1])
         return out_dict
+
+    @staticmethod
+    def get_self_ip() -> str:
+        output = sb.check_output(r"ifconfig | tail | grep 'inet ' | awk '{print $2}'", shell=True)
+        if output:
+            output = output.decode()
+            output = output.split('\n')
+            output = list(filter(lambda ip: ip, output))
+            output = output[-1]
+            return output
+        else:
+            return 'ERROR'
