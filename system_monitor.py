@@ -39,6 +39,7 @@ def send_message(data: dict):
             logging.exception(_ex)
         else:
             logging.info('Send successful')
+            break
     logging.error('Max try exceeded')
 
 
