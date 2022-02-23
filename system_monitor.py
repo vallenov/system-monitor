@@ -91,7 +91,7 @@ def check_ip():
     if conf.has_option('SETTINGS', 'self_ip'):
         old_ip = conf.get('SETTINGS', 'self_ip')
     new_ip = Monitor.get_self_ip()
-    if old_ip is None:
+    if old_ip != new_ip or old_ip is None:
         conf.set('SETTINGS', 'self_ip', new_ip)
         ini_save(conf)
     else:

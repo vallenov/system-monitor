@@ -43,4 +43,4 @@ class Monitor:
             output = output[-1]
             return output
         else:
-            return 'ERROR'
+            return None
