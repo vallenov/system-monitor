@@ -34,9 +34,11 @@ def send_message(data: dict):
     while current_try < MAX_TRY:
         current_try += 1
         try:
-            requests.post(conf.get('URL', 'message_server_address'), data=data, headers={'Connection': 'close'})
+            requests.post(conf.get('URL', 'message_server_address') + 'telegram',
+                          data=data,
+                          headers={'Connection': 'close'})
         except Exception as exc:
-            logging.exception(_ex)
+            logging.exception(exc)
         else:
             logging.info('Send successful')
             break
