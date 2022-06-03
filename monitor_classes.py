@@ -2,7 +2,10 @@ import subprocess as sb
 
 
 class Monitor:
-    block_message = {}
+    block_message = {
+        'ssh': {},
+        'used_space': {}
+    }
 
     @staticmethod
     def get_name_of_machine() -> str:
@@ -44,3 +47,10 @@ class Monitor:
             return output
         else:
             return None
+
+    @staticmethod
+    def get_ssh_connections() -> list:
+        output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' | awk '{print $5}'", shell=True)
+        output = output.decode().split('\n')
+        output = output[1:-1]
+        return output
