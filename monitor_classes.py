@@ -34,7 +34,7 @@ class Monitor:
         return out_dict
 
     @staticmethod
-    def get_self_ip() -> str:
+    def get_self_ip() -> str or None:
         output = sb.check_output(r"ifconfig | tail | grep 'inet ' | awk '{print $2}'", shell=True)
         if output:
             output = output.decode()
