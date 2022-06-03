@@ -27,7 +27,7 @@ class Monitor:
 
     @staticmethod
     def get_used_space() -> dict:
-        output = sb.check_output(r"df -h | grep '/\n' | awk '{print $6, $5}'", shell=True)
+        output = sb.check_output(r"df -h | grep [[:digit:]][[:lower:]][[:digit:]] | awk '{print $6, $5}'", shell=True)
         output = output.decode().split('\n')
         output = list(filter(lambda line: len(line) > 0, output))
         out_dict = {}
