@@ -65,6 +65,32 @@ def check_temperature():
         Monitor.block_message['temperature'] = False
 
 
+def check_ssh_connections():
+    """
+    Проверка ssh соединений
+    """
+    connections = Monitor.get_ssh_connections()
+    for conn in Monitor.block_message['ssh'].keys():
+        if conn not in connections:
+            Monitor.block_message['ssh'].pop(conn)
+    if len(connections) == 1 and Monitor.block_message.get('ssh', {}).get(connections[0], False) is False:
+        data = dict()
+        data['to'] = conf.get('CONTACT', 'telegram_name')
+        name = Monitor.get_name_of_machine()
+        data['text'] = f'Новое подключение к "{name}" с адреса {connections[0]}'
+        send_message(data)
+        Monitor.block_message['ssh'][connections[0]] = True
+    elif len(connections) > 1:
+        data = dict()
+        data['to'] = conf.get('CONTACT', 'telegram_name')
+        name = Monitor.get_name_of_machine()
+        data['text'] = f'Количество подключений к "{name}" превысило 1! Текущие соединения: {connections}'
+        send_message(data)
+        Monitor.block_message['ssh'][connections[0]] = True
+    elif len(connections) == 0:
+        Monitor.block_message['ssh'].clear()
+
+
 def check_used_space():
     """
     Проверка оставшегося свободного места на жестком диске
@@ -73,14 +99,14 @@ def check_used_space():
     used_space = Monitor.get_used_space()
     name = Monitor.get_name_of_machine()
     for key, value in used_space.items():
-        if value > max_used_space and Monitor.block_message.get(f'used_space{key}', False) is False:
+        if value > max_used_space and Monitor.block_message.get('used_space').get(key, False) is False:
             data = dict()
             data['to'] = conf.get('CONTACT', 'telegram_name')
             data['text'] = f'Свободное место в "{key}" на сервере {name} заканчивается. Осталось {100 - value}%'
             send_message(data)
-            Monitor.block_message[f'used_spase{key}'] = True
-        else:
-            Monitor.block_message[f'used_spase{key}'] = False
+            Monitor.block_message['used_space'][key] = True
+        elif value < max_used_space:
+            Monitor.block_message['used_space'][key] = False
 
 
 def check_ip():
@@ -113,6 +139,7 @@ if __name__ == "__main__":
         try:
             conf = load_config()
 
+            check_ssh_connections()
             check_temperature()
             check_used_space()
             check_ip()
