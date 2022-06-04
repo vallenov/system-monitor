@@ -134,18 +134,23 @@ if __name__ == "__main__":
     logging.basicConfig(filename='run.log',
                         level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s')
+    i = 0
+    sec = 1
+    minute = sec * 60
 
     while True:
+        i = 0 if i > 600 else i
         try:
-            conf = load_config()
-
-            check_ssh_connections()
-            check_temperature()
-            check_used_space()
-            check_ip()
-
+            if i and not i % 5*sec:
+                check_ip()
+                check_ssh_connections()
+            if i and not i % minute:
+                conf = load_config()
+                check_temperature()
+            if i and not i % 5*minute:
+                check_used_space()
         except Exception as _ex:
             logging.exception(f'Unrecognized exception {_ex}')
-
-        time.sleep(int(conf.get('SETTINGS', 'sleep_time')))
+        i += 1
+        time.sleep(1)
 
