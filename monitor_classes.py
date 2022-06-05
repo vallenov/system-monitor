@@ -53,4 +53,7 @@ class Monitor:
         output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' | awk '{print $5}'", shell=True)
         output = output.decode().split('\n')
         output = output[1:-1]
+        for conn in output:
+            if conn.split(':')[0] not in output:
+                conn = conn.split(':')[0]
         return output
