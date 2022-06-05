@@ -74,21 +74,14 @@ def check_ssh_connections():
         if conn not in connections:
             Monitor.block_message['ssh'].pop(conn)
     for conn in connections:
-        if len(connections) == 1 and Monitor.block_message.get('ssh', {}).get(conn, False) is False:
+        if Monitor.block_message.get('ssh', {}).get(conn, False) is False:
             data = dict()
             data['to'] = conf.get('CONTACT', 'telegram_name')
             name = Monitor.get_name_of_machine()
-            data['text'] = f'Новое подключение к "{name}" с адреса {conn}'
+            data['text'] = str(f'Новое подключение к "{name}" с адреса {conn}.'
+                               f'Текущее количество подключений: {len(connections)}')
             send_message(data)
             Monitor.block_message['ssh'][conn] = True
-        elif len(connections) > 1:
-            data = dict()
-            data['to'] = conf.get('CONTACT', 'telegram_name')
-            name = Monitor.get_name_of_machine()
-            data['text'] = f'Количество подключений к "{name}" превысило 1! Текущие соединения: {connections}'
-            send_message(data)
-            for c in connections:
-                Monitor.block_message['ssh'][c] = True
         elif len(connections) == 0:
             Monitor.block_message['ssh'].clear()
 
