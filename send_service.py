@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from ini_service import conf
+from ini_service import load_config
 
 MAX_TRY = 15
 
@@ -9,9 +9,9 @@ MAX_TRY = 15
 def send_message(data: dict):
     """
     Отправка сообщения админу
-
     """
     current_try = 0
+    conf = load_config()
     while current_try < MAX_TRY:
         current_try += 1
         try:

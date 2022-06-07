@@ -8,11 +8,8 @@ def load_config():
 
 
 def ini_save(config_inf):
-    '''
+    """
     Сохранение изменений в іnі-файл
-    '''
+    """
     with open(f'system_monitor.ini', 'w') as f:
         config_inf.write(f)
-
-
-conf = load_config()

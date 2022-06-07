@@ -1,13 +1,15 @@
 import logging
+
 from monitor_classes import Monitor
-from ini_service import conf
+from ini_service import load_config, ini_save
+from send_service import send_message
 
 
 def check_temperature():
     """
     Проверка превышения заданной температуры
     """
-
+    conf = load_config()
     max_temp = int(conf.get('MAX_VALUES', 'max_temp'))
 
     temp = Monitor.get_temperature()
@@ -27,6 +29,7 @@ def check_ssh_connections():
     """
     Проверка ssh соединений
     """
+    conf = load_config()
     connections = Monitor.get_ssh_connections()
     for conn in Monitor.block_message['ssh'].keys():
         if conn not in connections:
@@ -48,6 +51,7 @@ def check_used_space():
     """
     Проверка оставшегося свободного места на жестком диске
     """
+    conf = load_config()
     max_used_space = int(conf.get('MAX_VALUES', 'max_used_space'))
     used_space = Monitor.get_used_space()
     name = Monitor.get_name_of_machine()
@@ -66,6 +70,7 @@ def check_ip():
     """
     Проверка изменения IP-адреса
     """
+    conf = load_config()
     old_ip = None
     if conf.has_option('SETTINGS', 'self_ip'):
         old_ip = conf.get('SETTINGS', 'self_ip')
