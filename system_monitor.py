@@ -1,6 +1,4 @@
 import logging
-import threading
-import os
 
 from flask_app import app
 from check_functions import Checker
