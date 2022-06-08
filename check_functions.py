@@ -46,7 +46,8 @@ class Checker:
             if conn not in connections:
                 data = dict()
                 data['to'] = conf.get('CONTACT', 'telegram_name')
-                data['text'] = str(f'Сессия {conn} завершена')
+                data['text'] = str(f'Сессия {conn} завершена.'
+                                   f'Текущее количество подключений: {len(connections)}')
                 send_message(data)
                 Checker.block_message['ssh'].pop(conn)
         for conn in connections:
