@@ -2,10 +2,6 @@ import subprocess as sb
 
 
 class Monitor:
-    block_message = {
-        'ssh': {},
-        'used_space': {}
-    }
 
     @staticmethod
     def get_name_of_machine() -> str:
