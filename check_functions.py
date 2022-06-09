@@ -125,6 +125,7 @@ class Checker:
 
     @staticmethod
     def run():
+        # хинт, что бы процессы не двоились
         if 'WERKZEUG_RUN_MAIN' not in os.environ:
             cl = threading.Thread(target=Checker.check_loop)
             cl.start()

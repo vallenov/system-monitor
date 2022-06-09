@@ -1,10 +1,11 @@
 from flask import Flask
 import os
+from monitor import Monitor
 
 app = Flask(__name__)
 
 
-@app.route('/start_ngrok', methods=['GET'])
+@app.route('/ngrok_start', methods=['GET'])
 def start_ngrok():
     os.system('systemctl start ngrok.service')
     res = {
@@ -14,7 +15,7 @@ def start_ngrok():
     return res
 
 
-@app.route('/restart_ngrok', methods=['GET'])
+@app.route('/ngrok_restart', methods=['GET'])
 def restart_ngrok():
     os.system('systemctl restart ngrok.service')
     res = {
@@ -24,7 +25,7 @@ def restart_ngrok():
     return res
 
 
-@app.route('/stop_ngrok', methods=['GET'])
+@app.route('/ngrok_stop', methods=['GET'])
 def stop_ngrok():
     os.system('systemctl stop ngrok.service')
     res = {
@@ -34,7 +35,7 @@ def stop_ngrok():
     return res
 
 
-@app.route('/start_ngrok_db', methods=['GET'])
+@app.route('/ngrok_db_start', methods=['GET'])
 def start_ngrok_db():
     os.system('systemctl start ngrok_db.service')
     res = {
@@ -44,7 +45,7 @@ def start_ngrok_db():
     return res
 
 
-@app.route('/restart_ngrok_db', methods=['GET'])
+@app.route('/ngrok_db_restart', methods=['GET'])
 def restart_ngrok_db():
     os.system('systemctl restart ngrok_db.service')
     res = {
@@ -54,7 +55,7 @@ def restart_ngrok_db():
     return res
 
 
-@app.route('/stop_ngrok_db', methods=['GET'])
+@app.route('/ngrok_db_stop', methods=['GET'])
 def stop_ngrok_db():
     os.system('systemctl stop ngrok_db.service')
     res = {
@@ -62,3 +63,8 @@ def stop_ngrok_db():
         'msg': 'Ngrok DB остановлен'
     }
     return res
+
+
+@app.route('/ngrok_tunnels', methods=['GET'])
+def stop_ngrok_db():
+    return Monitor.get_ngrok_tunnels()
