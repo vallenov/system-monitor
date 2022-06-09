@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 
 @app.route('/start_ngrok', methods=['GET'])
-def restart_ngrok():
+def start_ngrok():
     os.system('systemctl start ngrok.service')
     res = {
         'res': 'OK',
@@ -25,7 +25,7 @@ def restart_ngrok():
 
 
 @app.route('/stop_ngrok', methods=['GET'])
-def restart_ngrok():
+def stop_ngrok():
     os.system('systemctl stop ngrok.service')
     res = {
         'res': 'OK',
@@ -35,7 +35,7 @@ def restart_ngrok():
 
 
 @app.route('/start_ngrok_db', methods=['GET'])
-def restart_ngrok_db():
+def start_ngrok_db():
     os.system('systemctl start ngrok_db.service')
     res = {
         'res': 'OK',
@@ -55,7 +55,7 @@ def restart_ngrok_db():
 
 
 @app.route('/stop_ngrok_db', methods=['GET'])
-def restart_ngrok_db():
+def stop_ngrok_db():
     os.system('systemctl stop ngrok_db.service')
     res = {
         'res': 'OK',
