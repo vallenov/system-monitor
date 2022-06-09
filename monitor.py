@@ -1,7 +1,12 @@
 import subprocess as sb
+import requests
+import json
+from ini_service import load_config
 
 
 class Monitor:
+
+    conf = load_config()
 
     @staticmethod
     def get_name_of_machine() -> str:
@@ -50,3 +55,25 @@ class Monitor:
         output = output.decode().split('\n')
         output = output[1:-1]
         return output
+
+    @staticmethod
+    def get_ngrok_tunnels() -> dict:
+        tunnels = []
+        headers = {
+            'Authorization': f"Bearer {Monitor.conf['SETTINGS'].get('ngrok_token')}",
+            'Ngrok-Version': '2'
+        }
+        data = requests.get(Monitor.conf['URL'].get('ngrok_api') + 'tunnels', headers=headers)
+        if data.status_code == 200:
+            res = json.loads(data.text)
+            for tunnel in res['tunnels']:
+                arr = tunnel['public_url'].split(':')
+                url = ':'.join(arr[:2]).replace('tcp://', 'http://')
+                port = arr[2]
+                tunnels.append({
+                    'url': url,
+                    'port': port,
+                    'protocol': tunnel['proto'],
+                    'forwards_to': tunnel['forwards_to']
+                })
+        return {'msg': tunnels}
