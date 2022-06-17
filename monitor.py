@@ -39,15 +39,13 @@ class Monitor:
 
     @staticmethod
     def get_self_ip() -> str or None:
-        output = sb.check_output(r"ifconfig | tail | grep 'inet ' | awk '{print $2}'", shell=True)
-        if output:
-            output = output.decode()
-            output = output.split('\n')
-            output = list(filter(lambda ip: ip, output))
-            output = output[-1]
-            return output
-        else:
-            return None
+        output = sb.check_output("ifconfig | "
+                                 "grep `ifconfig -s | "
+                                 "grep '\<w.*' | "
+                                 "awk '{print $1}'` -A 1 | "
+                                 "grep inet | "
+                                 "awk '{print $2}'", shell=True)
+        return output.decode() if output else None
 
     @staticmethod
     def get_ssh_connections() -> list:
