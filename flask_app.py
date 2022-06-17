@@ -68,3 +68,11 @@ def ngrok_db_stop():
 @app.route('/ngrok_tunnels', methods=['GET'])
 def ngrok_tunnels():
     return Monitor.get_ngrok_tunnels()
+
+
+@app.route('/ip', methods=['GET'])
+def ip():
+    res = {
+        'ip': Monitor.get_self_ip()
+    }
+    return res
