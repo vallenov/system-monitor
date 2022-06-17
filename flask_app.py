@@ -72,4 +72,7 @@ def ngrok_tunnels():
 
 @app.route('/ip', methods=['GET'])
 def ip():
-    return Monitor.get_self_ip()
+    res = {
+        'ip': Monitor.get_self_ip()
+    }
+    return res
