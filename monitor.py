@@ -45,7 +45,8 @@ class Monitor:
                                  "awk '{print $1}'` -A 1 | "
                                  "grep inet | "
                                  "awk '{print $2}'", shell=True)
-        return output.decode() if output else None
+        output = output.decode()
+        return output[:-1] if output else None
 
     @staticmethod
     def get_ssh_connections() -> list:
