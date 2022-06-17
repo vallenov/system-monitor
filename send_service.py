@@ -22,5 +22,5 @@ def send_message(data: dict):
             logging.exception(exc)
         else:
             logging.info('Send successful')
-            break
+            return
     logging.error('Max try exceeded')
