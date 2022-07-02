@@ -81,8 +81,3 @@ def ip():
 @app.route('/tbot_restart', methods=['GET'])
 def ip():
     os.system('systemctl restart TBot.service')
-    res = {
-        'res': 'OK',
-        'msg': 'TBot отправлен в перезагрузку'
-    }
-    return res
