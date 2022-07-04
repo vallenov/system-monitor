@@ -82,6 +82,7 @@ def ip():
 def ip():
     os.system('systemctl restart TBot.service')
     res = {
-        'res': 'OK'
+        'res': 'OK',
+        'msg': 'TBot отправлен в перезагрузку'
     }
     return res
