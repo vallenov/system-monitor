@@ -105,6 +105,9 @@ class Checker:
 
     @staticmethod
     def check_loop():
+        """
+        Главный цикл проверки
+        """
         i = 0
         sec = 1
         minute = sec * 60

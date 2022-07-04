@@ -76,3 +76,8 @@ def ip():
         'ip': Monitor.get_self_ip()
     }
     return res
+
+
+@app.route('/tbot_restart', methods=['GET'])
+def ip():
+    os.system('systemctl restart TBot.service')
