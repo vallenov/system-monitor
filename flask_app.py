@@ -86,7 +86,7 @@ def tbot_restart():
 
 
 @app.route('/system_restart', methods=['GET'])
-def malinka_restart():
+def system_restart():
     os.system('reboot')
 
 
@@ -98,7 +98,12 @@ def systemctl():
         return {
             'msg': 'Не найдены данные о сервисе и/или действии'
         }
-    result = sp.check_output(f'systemctl {action} {service}.service', shell=True) or None
+    try:
+        result = sp.check_output(f'systemctl {action} {service}.service', shell=True) or None
+    except sp.CalledProcessError as spe:
+        return {
+            'msg': f'Команда "{spe.cmd}" вернула код: {spe.returncode}'
+        }
     if result:
         return {
             'msg': result.decode()
