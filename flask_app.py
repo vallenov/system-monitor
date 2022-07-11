@@ -1,5 +1,7 @@
 from flask import Flask
+from flask_restful import request
 import os
+import subprocess as sp
 from monitor import Monitor
 
 app = Flask(__name__)
@@ -86,3 +88,21 @@ def tbot_restart():
 @app.route('/system_restart', methods=['GET'])
 def malinka_restart():
     os.system('reboot')
+
+
+@app.route('/systemctl', methods=['GET'])
+def systemctl():
+    action = request.args.get('action', None)
+    service = request.args.get('service', None)
+    if not action or not service:
+        return {
+            'msg': 'Не найдены данные о сервисе и/или действии'
+        }
+    result = sp.check_output(f'systemctl {action} {service}.service', shell=True) or None
+    if result:
+        return {
+            'msg': result.decode()
+        }
+    return {
+        'msg': f'К сервису {service} применена команда {action}'
+    }
