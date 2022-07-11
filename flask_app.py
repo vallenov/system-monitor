@@ -83,6 +83,6 @@ def tbot_restart():
     os.system('systemctl restart TBot.service')
 
 
-@app.route('/malinka_restart', methods=['GET'])
+@app.route('/system_restart', methods=['GET'])
 def malinka_restart():
     os.system('reboot')
