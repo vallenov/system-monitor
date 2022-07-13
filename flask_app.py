@@ -77,5 +77,4 @@ def systemctl():
 
 @app.route('/test', methods=['GET'])
 def test():
-    time.sleep(10)
     return {'msg': 'OK'}
