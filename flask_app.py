@@ -2,7 +2,6 @@ from flask import Flask
 from flask_restful import request
 import os
 import subprocess as sp
-import time
 
 from monitor import Monitor
 
