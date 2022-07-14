@@ -8,7 +8,7 @@ from monitor import Monitor
 app = Flask(__name__)
 
 
-@app.route('/ngrok_<act>', methods=['GET'])
+@app.route('/ngrok_<action>', methods=['GET'])
 def ngrok_ssh(action):
     os.system(f'systemctl {action} ngrok.service')
     res = {
