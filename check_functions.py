@@ -66,7 +66,11 @@ class Checker:
             elif conn in Checker.unverified_ssh_connections:
                 Checker.unverified_ssh_connections[conn] -= 1
                 if Checker.unverified_ssh_connections[conn] == 0:
-                    os.system('systemctl restart ngrok.service')
+                    # os.system('systemctl restart ngrok.service')
+                    send_message({
+                        'to': conf.get('TELEBOT', 'root_id'),
+                        'text': 'Перезагрузка ngrok'
+                    })
             elif len(connections) == 0:
                 Checker.block_message['ssh'].clear()
 
