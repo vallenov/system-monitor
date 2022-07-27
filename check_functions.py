@@ -5,7 +5,7 @@ import threading
 
 from monitor import Monitor
 from ini_service import load_config, ini_save
-from send_service import send_message
+from send_service import send_message, send_confirmation_message
 
 
 class Checker:
@@ -14,6 +14,8 @@ class Checker:
         'ssh': {},
         'used_space': {}
     }
+
+    unverified_ssh_connections = {}
 
     @staticmethod
     def check_temperature():
@@ -59,6 +61,12 @@ class Checker:
                                    f'Текущее количество подключений: {len(connections)}')
                 send_message(data)
                 Checker.block_message['ssh'][conn] = True
+                Checker.unverified_ssh_connections[conn] = 2
+                send_confirmation_message()
+            elif conn in Checker.unverified_ssh_connections:
+                Checker.unverified_ssh_connections[conn] -= 1
+                if Checker.unverified_ssh_connections[conn] == 0:
+                    os.system('systemctl restart ngrok.service')
             elif len(connections) == 0:
                 Checker.block_message['ssh'].clear()
 
