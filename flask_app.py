@@ -4,7 +4,7 @@ import os
 import subprocess as sp
 
 from monitor import Monitor
-from check_functions import Checker
+import check_functions
 
 app = Flask(__name__)
 
@@ -82,7 +82,7 @@ def test():
 
 @app.route('/allow_connection', methods=['GET'])
 def allow_connection():
-    Checker.unverified_ssh_connections.clear()
+    check_functions.Checker.unverified_ssh_connections.clear()
     return {
         'msg': 'Соединение подтверждено'
     }
