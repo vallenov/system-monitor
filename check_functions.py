@@ -28,7 +28,7 @@ class Checker:
         temp = Monitor.get_temperature()
         if temp >= max_temp and Checker.block_message.get('temperature', False) is False:
             data = dict()
-            data['to'] = conf.get('CONTACT', 'telegram_name')
+            data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
             name = Monitor.get_name_of_machine()
             data['text'] = f'Температура {name} сейчас: {temp}°C'
             send_message(data)
@@ -47,7 +47,7 @@ class Checker:
         for conn in Checker.block_message['ssh'].keys():
             if conn not in connections:
                 data = dict()
-                data['to'] = conf.get('CONTACT', 'telegram_name')
+                data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
                 data['text'] = str(f'Сессия {conn} завершена.'
                                    f'Текущее количество подключений: {len(connections)}')
                 send_message(data)
@@ -55,7 +55,7 @@ class Checker:
         for conn in connections:
             if Checker.block_message.get('ssh', {}).get(conn, False) is False:
                 data = dict()
-                data['to'] = conf.get('CONTACT', 'telegram_name')
+                data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
                 name = Monitor.get_name_of_machine()
                 data['text'] = str(f'Новое подключение к "{name}" с адреса {conn}.'
                                    f'Текущее количество подключений: {len(connections)}')
@@ -86,7 +86,7 @@ class Checker:
         for key, value in used_space.items():
             if value > max_used_space and Checker.block_message.get('used_space').get(key, False) is False:
                 data = dict()
-                data['to'] = conf.get('CONTACT', 'telegram_name')
+                data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
                 data['text'] = f'Свободное место в "{key}" на сервере {name} заканчивается. Осталось {100 - value}%'
                 send_message(data)
                 Checker.block_message['used_space'][key] = True
@@ -111,7 +111,7 @@ class Checker:
                 return
         name = Monitor.get_name_of_machine()
         data = dict()
-        data['to'] = conf.get('CONTACT', 'telegram_name')
+        data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
         data['text'] = f'Новый IP-адрес {name}: {new_ip}'
         send_message(data)
 
