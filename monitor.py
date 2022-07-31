@@ -50,7 +50,9 @@ class Monitor:
 
     @staticmethod
     def get_ssh_connections() -> list:
-        output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' | awk '{print $5}'", shell=True)
+        output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' "
+                                 r"| awk '{print $5}' "
+                                 r"| grep -v ssh", shell=True)
         output = output.decode().split('\n')
         output = output[1:-1]
         return output
