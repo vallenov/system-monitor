@@ -6,7 +6,16 @@ import subprocess as sp
 from monitor import Monitor
 import check_functions
 
-app = Flask(__name__)
+# app = Flask(__name__)
+
+
+class MyApp(Flask):
+    def __init__(self, *args, **kwargs):
+        check_functions.Checker.run()
+        super().__init__(*args, **kwargs)
+
+
+app = MyApp(__name__)
 
 
 @app.route('/ngrok_<action>', methods=['GET'])
