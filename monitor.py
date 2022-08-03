@@ -48,7 +48,6 @@ class Monitor:
         output = output.decode()
         return output[:-1] if output else None
 
-    '''ss - o state established '( dport = :ssh or sport = :ssh )' | awk '{print $5}' | grep -v ssh'''
     @staticmethod
     def get_ssh_connections() -> list:
         output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' "
