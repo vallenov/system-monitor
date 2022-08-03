@@ -5,7 +5,6 @@ from ini_service import load_config
 
 
 class Monitor:
-
     conf = load_config()
 
     @staticmethod
@@ -52,7 +51,6 @@ class Monitor:
     def get_ssh_connections() -> list:
         output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' "
                                  r"| awk '{print $5}' "
-                                 r"| grep '127\.0\.0\.1' "
                                  r"| grep -v ssh", shell=True)
         output = output.decode().split('\n')
         output = output[1:-1]
