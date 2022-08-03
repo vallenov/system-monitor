@@ -61,18 +61,19 @@ class Checker:
                                    f'Текущее количество подключений: {len(connections)}')
                 send_message(data)
                 Checker.block_message['ssh'][conn] = True
-                Checker.unverified_ssh_connections[conn] = 2
+                Checker.unverified_ssh_connections[conn] = 10
                 send_confirmation_message()
-            elif conn in Checker.unverified_ssh_connections:
-                Checker.unverified_ssh_connections[conn] -= 1
-                if Checker.unverified_ssh_connections[conn] == 0:
-                    # os.system('systemctl restart ngrok.service')
-                    send_message({
-                        'to': conf.get('TELEBOT', 'root_id'),
-                        'text': 'Перезагрузка ngrok'
-                    })
             elif len(connections) == 0:
                 Checker.block_message['ssh'].clear()
+        for conn in Checker.unverified_ssh_connections:
+            Checker.unverified_ssh_connections[conn] -= 1
+            if Checker.unverified_ssh_connections[conn] == 0:
+                os.system('systemctl restart ngrok.service')
+                send_message({
+                    'to': conf.get('TELEBOT', 'root_id'),
+                    'text': 'Перезагрузка ngrok'
+                })
+                Checker.unverified_ssh_connections.clear()
 
     @staticmethod
     def check_used_space():
@@ -126,9 +127,10 @@ class Checker:
         while True:
             i = 0 if i > 600 else i
             try:
+                if i and not i % sec:
+                    Checker.check_ssh_connections()
                 if i and not i % 5 * sec:
                     Checker.check_ip()
-                    Checker.check_ssh_connections()
                 if i and not i % minute:
                     Checker.check_temperature()
                 if i and not i % 5 * minute:
