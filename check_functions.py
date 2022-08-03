@@ -61,8 +61,9 @@ class Checker:
                                    f'Текущее количество подключений: {len(connections)}')
                 send_message(data)
                 Checker.block_message['ssh'][conn] = True
-                Checker.unverified_ssh_connections[conn] = 10
-                send_confirmation_message()
+                if conn.startswith('127.0.0.1'):
+                    Checker.unverified_ssh_connections[conn] = 10
+                    send_confirmation_message()
             elif len(connections) == 0:
                 Checker.block_message['ssh'].clear()
         for conn in Checker.unverified_ssh_connections:
