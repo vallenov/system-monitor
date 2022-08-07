@@ -6,8 +6,6 @@ import subprocess as sp
 from monitor import Monitor
 import check_functions
 
-# app = Flask(__name__)
-
 
 class MyApp(Flask):
     def __init__(self, *args, **kwargs):
