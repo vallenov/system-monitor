@@ -23,7 +23,9 @@ echo System-monitor server is start
 
 if [ $venv = True ]
 then
-  ./.venv/bin/flask run --host=0.0.0.0 --port=5112
+  # ./.venv/bin/flask run --host=0.0.0.0 --port=5112
+  python system_monitor.py
 else
-  ~/.pyenv/versions/MessageSender/bin/flask run --host=0.0.0.0 --port=5112
+  # ~/.pyenv/versions/MessageSender/bin/flask run --host=0.0.0.0 --port=5112
+  ~/.pyenv/versions/MessageSender/bin/python system_monitor.py
 fi
