@@ -93,3 +93,11 @@ def allow_connection():
     return {
         'msg': 'Соединение подтверждено'
     }
+
+
+@app.route('/uptime', methods=['GET'])
+def uptime():
+    upt = Monitor.uptime()
+    return {
+        'msg': upt.get('msg', None)
+    }
