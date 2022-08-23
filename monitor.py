@@ -77,3 +77,15 @@ class Monitor:
                     'forwards_to': tunnel['forwards_to']
                 })
         return {'msg': tunnels}
+
+    @staticmethod
+    def uptime() -> dict:
+        output = sb.check_output('uptime')
+        output = output.decode().split()
+        data = {
+            'server_time': output[0],
+            'uptime': ' '.join(output[2:5]),
+            'users': output[5],
+            'load_average': ' '.join(output[9:])
+        }
+        return {'msg': data}
