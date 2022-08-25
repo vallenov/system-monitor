@@ -1,7 +1,26 @@
 from datetime import datetime
 from functools import wraps
+import time
 
 date_format = ['second', 'minute', 'hour', 'day', 'month', 'weekday', 'year']
+
+
+class Datedict(dict):
+    def __eq__(self, other: dict):
+        for key, value in self.items():
+            if other.get(key) is None:
+                return False
+            if isinstance(value, int):
+                if value != int(other[key]):
+                    return False
+            elif isinstance(value, list):
+                if '*' in value:
+                    if other[key] % value[1]:
+                        return False
+                else:
+                    if other[key] not in value:
+                        return False
+        return True
 
 
 def cron(rule: str = '* * * * * * *'):
@@ -11,15 +30,8 @@ def cron(rule: str = '* * * * * * *'):
             rule_list = rule.split()
             if len(rule_list) != 7:
                 raise ValueError('Wrong rule')
-            rule_dict = dict(zip(date_format, rule_list))
+            rule_dict = Datedict(zip(date_format, rule_list))
             now = datetime.now()
-            rule_dict['second'] = now.second if rule_dict['second'] == '*' else int(rule_dict['second'])
-            rule_dict['minute'] = now.minute if rule_dict['minute'] == '*' else int(rule_dict['minute'])
-            rule_dict['hour'] = now.hour if rule_dict['hour'] == '*' else int(rule_dict['hour'])
-            rule_dict['day'] = now.day if rule_dict['day'] == '*' else int(rule_dict['day'])
-            rule_dict['month'] = now.month if rule_dict['month'] == '*' else int(rule_dict['month'])
-            rule_dict['weekday'] = now.weekday() if rule_dict['weekday'] == '*' else int(rule_dict['weekday'])
-            rule_dict['year'] = now.year if rule_dict['year'] == '*' else int(rule_dict['year'])
             now_dict = {
                 'second': now.second,
                 'minute': now.minute,
@@ -29,7 +41,34 @@ def cron(rule: str = '* * * * * * *'):
                 'weekday': now.weekday(),
                 'year': now.year
             }
+            for key, value in now_dict.items():
+                if rule_dict[key] == '*':
+                    rule_dict[key] = value
+                elif '*' in rule_dict[key]:
+                    rule_dict[key] = list(map(lambda x: int(x) if x != '*' else x, rule_dict[key].split('/')))
+                elif ',' in rule_dict[key]:
+                    try:
+                        rule_dict[key] = list(map(lambda x: int(x), rule_dict[key].split(',')))
+                    except ValueError:
+                        raise ValueError('Wrong rule')
+                elif len(rule_dict[key]) == 1:
+                    try:
+                        rule_dict[key] = int(rule_dict[key])
+                    except ValueError:
+                        raise ValueError('Wrong rule')
+                else:
+                    raise ValueError('Wrong rule')
             if rule_dict == now_dict:
                 return func(*args, **kwargs)
         return wrap
     return decorator
+
+
+@cron()
+def test():
+    print('qwer')
+
+
+while True:
+    test()
+    time.sleep(1)
