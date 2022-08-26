@@ -5,7 +5,7 @@ import time
 date_format = ['second', 'minute', 'hour', 'day', 'month', 'weekday', 'year']
 
 
-class DateDict(dict):
+class CronDict(dict):
     def __eq__(self, other: dict):
         for key, value in self.items():
             if other.get(key) is None:
@@ -30,7 +30,7 @@ def cron(rule: str = '* * * * * * *'):
             rule_list = rule.split()
             if len(rule_list) != 7:
                 raise ValueError('Wrong rule')
-            rule_dict = DateDict(zip(date_format, rule_list))
+            rule_dict = CronDict(zip(date_format, rule_list))
             now = datetime.now()
             now_dict = {
                 'second': now.second,
