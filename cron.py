@@ -1,6 +1,5 @@
 from datetime import datetime
 from functools import wraps
-import time
 
 date_format = ['second', 'minute', 'hour', 'day', 'month', 'weekday', 'year']
 
@@ -40,7 +39,7 @@ def cron(rule: str = '* * * * * * *'):
                 'month': now.month,
                 'weekday': now.weekday(),
                 'year': now.year
-            }
+            } if kwargs.get('now_dict') is None else kwargs['now_dict']
             for key, value in now_dict.items():
                 if rule_dict[key] == '*':
                     rule_dict[key] = value
@@ -62,13 +61,3 @@ def cron(rule: str = '* * * * * * *'):
                 return func(*args, **kwargs)
         return wrap
     return decorator
-
-
-@cron()
-def test():
-    print('qwer')
-
-
-while True:
-    test()
-    time.sleep(1)
