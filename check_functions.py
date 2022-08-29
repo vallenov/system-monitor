@@ -6,6 +6,7 @@ import threading
 from monitor import Monitor
 from ini_service import load_config, ini_save
 from send_service import send_message, send_confirmation_message
+from cron import cron
 
 
 class Checker:
@@ -18,6 +19,7 @@ class Checker:
     unverified_ssh_connections = {}
 
     @staticmethod
+    @cron(rule='*/5 * * * * * *')
     def check_temperature():
         """
         Проверка превышения заданной температуры
@@ -38,6 +40,7 @@ class Checker:
             Checker.block_message['temperature'] = False
 
     @staticmethod
+    @cron(rule='* * * * * * *')
     def check_ssh_connections():
         """
         Проверка ssh соединений
@@ -77,6 +80,7 @@ class Checker:
                 Checker.unverified_ssh_connections.clear()
 
     @staticmethod
+    @cron(rule='* */5 * * * * *')
     def check_used_space():
         """
         Проверка оставшегося свободного места на жестком диске
@@ -96,6 +100,7 @@ class Checker:
                 Checker.block_message['used_space'][key] = False
 
     @staticmethod
+    @cron(rule='*/5 * * * * * *')
     def check_ip():
         """
         Проверка изменения IP-адреса
@@ -122,23 +127,14 @@ class Checker:
         """
         Главный цикл проверки
         """
-        i = 0
-        sec = 1
-        minute = sec * 60
         while True:
-            i = 0 if i > 600 else i
             try:
-                if i and not i % sec:
-                    Checker.check_ssh_connections()
-                if i and not i % 5 * sec:
-                    Checker.check_ip()
-                if i and not i % minute:
-                    Checker.check_temperature()
-                if i and not i % 5 * minute:
-                    Checker.check_used_space()
+                Checker.check_ip()
+                Checker.check_temperature()
+                Checker.check_ssh_connections()
+                Checker.check_used_space()
             except Exception as _ex:
                 logging.exception(f'Unrecognized exception {_ex}')
-            i += 1
             time.sleep(1)
 
     @staticmethod
