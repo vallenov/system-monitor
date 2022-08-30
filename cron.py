@@ -23,6 +23,15 @@ class CronDict(dict):
 
 
 def cron(rule: str = '* * * * * * *'):
+    """
+    Like linux cron
+    '* * * * * * *' = every second
+    '*/5 * * * * * *' = every 5 seconds
+    '0 * * * * * *' = every minute
+    '* * 0 * * * *' = every midnight
+    '* * 0,12 * * * *' = every midnight and afternoon
+    :param rule: rule of activation
+    """
     def decorator(func):
         @wraps(func)
         def wrap(*args, **kwargs):
