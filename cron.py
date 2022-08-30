@@ -31,6 +31,7 @@ def cron(rule: str = '* * * * * * *'):
     '* * 0 * * * *' = every midnight
     '* * 0,12 * * * *' = every midnight and afternoon
     :param rule: rule of activation
+    :return: decorator
     """
     def decorator(func):
         @wraps(func)
