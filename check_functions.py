@@ -2,6 +2,7 @@ import logging
 import os
 import time
 import threading
+from datetime import datetime
 
 from monitor import Monitor
 from ini_service import load_config, ini_save
@@ -20,7 +21,7 @@ class Checker:
 
     @staticmethod
     @cron(rule='*/5 * * * * * *')
-    def check_temperature():
+    def check_temperature(**kwargs):
         """
         Проверка превышения заданной температуры
         """
@@ -40,8 +41,8 @@ class Checker:
             Checker.block_message['temperature'] = False
 
     @staticmethod
-    @cron(rule='* * * * * * *')
-    def check_ssh_connections():
+    @cron()
+    def check_ssh_connections(**kwargs):
         """
         Проверка ssh соединений
         """
@@ -81,7 +82,7 @@ class Checker:
 
     @staticmethod
     @cron(rule='* */5 * * * * *')
-    def check_used_space():
+    def check_used_space(**kwargs):
         """
         Проверка оставшегося свободного места на жестком диске
         """
@@ -101,7 +102,7 @@ class Checker:
 
     @staticmethod
     @cron(rule='*/5 * * * * * *')
-    def check_ip():
+    def check_ip(**kwargs):
         """
         Проверка изменения IP-адреса
         """
@@ -129,10 +130,20 @@ class Checker:
         """
         while True:
             try:
-                Checker.check_ip()
-                Checker.check_temperature()
-                Checker.check_ssh_connections()
-                Checker.check_used_space()
+                now = datetime.now()
+                now_dict = {
+                    'second': now.second,
+                    'minute': now.minute,
+                    'hour': now.hour,
+                    'day': now.day,
+                    'month': now.month,
+                    'weekday': now.weekday(),
+                    'year': now.year
+                }
+                Checker.check_ip(now_dict=now_dict)
+                Checker.check_temperature(now_dict=now_dict)
+                Checker.check_ssh_connections(now_dict=now_dict)
+                Checker.check_used_space(now_dict=now_dict)
             except Exception as _ex:
                 logging.exception(f'Unrecognized exception {_ex}')
             time.sleep(1)

@@ -23,6 +23,16 @@ class CronDict(dict):
 
 
 def cron(rule: str = '* * * * * * *'):
+    """
+    Like linux cron
+    '* * * * * * *' = every second
+    '*/5 * * * * * *' = every 5 seconds
+    '0 * * * * * *' = every minute
+    '* * 0 * * * *' = every midnight
+    '* * 0,12 * * * *' = every midnight and afternoon
+    :param rule: rule of activation
+    :return: decorator
+    """
     def decorator(func):
         @wraps(func)
         def wrap(*args, **kwargs):
@@ -30,16 +40,18 @@ def cron(rule: str = '* * * * * * *'):
             if len(rule_list) != 7:
                 raise ValueError('Wrong rule')
             rule_dict = CronDict(zip(date_format, rule_list))
-            now = datetime.now()
-            now_dict = {
-                'second': now.second,
-                'minute': now.minute,
-                'hour': now.hour,
-                'day': now.day,
-                'month': now.month,
-                'weekday': now.weekday(),
-                'year': now.year
-            } if kwargs.get('now_dict') is None else kwargs['now_dict']
+            now_dict = kwargs.get('now_dict')
+            if not now_dict:
+                now = datetime.now()
+                now_dict = {
+                    'second': now.second,
+                    'minute': now.minute,
+                    'hour': now.hour,
+                    'day': now.day,
+                    'month': now.month,
+                    'weekday': now.weekday(),
+                    'year': now.year
+                }
             for key, value in now_dict.items():
                 if rule_dict[key] == '*':
                     rule_dict[key] = value
