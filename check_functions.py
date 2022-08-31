@@ -9,6 +9,8 @@ from ini_service import load_config, ini_save
 from send_service import send_message, send_confirmation_message
 from cron import cron
 
+ini_conf = load_config()
+
 
 class Checker:
 
@@ -20,7 +22,7 @@ class Checker:
     unverified_ssh_connections = {}
 
     @staticmethod
-    @cron(rule='*/5 * * * * * *')
+    @cron(rule=ini_conf.get('CRONTAB', 'check_temperature'))
     def check_temperature(**kwargs):
         """
         Проверка превышения заданной температуры
@@ -81,7 +83,7 @@ class Checker:
                 Checker.unverified_ssh_connections.clear()
 
     @staticmethod
-    @cron(rule='* */5 * * * * *')
+    @cron(rule=ini_conf.get('CRONTAB', 'check_used_space'))
     def check_used_space(**kwargs):
         """
         Проверка оставшегося свободного места на жестком диске
@@ -101,7 +103,7 @@ class Checker:
                 Checker.block_message['used_space'][key] = False
 
     @staticmethod
-    @cron(rule='*/5 * * * * * *')
+    @cron(rule=ini_conf.get('CRONTAB', 'check_ip'))
     def check_ip(**kwargs):
         """
         Проверка изменения IP-адреса
