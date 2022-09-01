@@ -8,6 +8,7 @@ from monitor import Monitor
 from ini_service import load_config, ini_save
 from send_service import send_message, send_confirmation_message
 from cron import cron
+import config
 
 ini_conf = load_config()
 
@@ -22,18 +23,17 @@ class Checker:
     unverified_ssh_connections = {}
 
     @staticmethod
-    @cron(rule=ini_conf.get('CRONTAB', 'check_temperature'))
+    @cron(rule=config.CronTab.check_temperature)
     def check_temperature(**kwargs):
         """
         Проверка превышения заданной температуры
         """
-        conf = load_config()
-        max_temp = int(conf.get('MAX_VALUES', 'max_temp'))
+        max_temp = config.MaxValues.max_temp
 
         temp = Monitor.get_temperature()
         if temp >= max_temp and Checker.block_message.get('temperature', False) is False:
             data = dict()
-            data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
+            data['to'] = config.TELEGRAM_CHAT_ID
             name = Monitor.get_name_of_machine()
             data['text'] = f'Температура {name} сейчас: {temp}°C'
             send_message(data)
@@ -48,12 +48,11 @@ class Checker:
         """
         Проверка ssh соединений
         """
-        conf = load_config()
         connections = Monitor.get_ssh_connections()
         for conn in Checker.block_message['ssh'].keys():
             if conn not in connections:
                 data = dict()
-                data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
+                data['to'] = config.TELEGRAM_CHAT_ID
                 data['text'] = str(f'Сессия {conn} завершена.'
                                    f'Текущее количество подключений: {len(connections)}')
                 send_message(data)
@@ -61,7 +60,7 @@ class Checker:
         for conn in connections:
             if Checker.block_message.get('ssh', {}).get(conn, False) is False:
                 data = dict()
-                data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
+                data['to'] = config.TELEGRAM_CHAT_ID
                 name = Monitor.get_name_of_machine()
                 data['text'] = str(f'Новое подключение к "{name}" с адреса {conn}.'
                                    f'Текущее количество подключений: {len(connections)}')
@@ -77,25 +76,24 @@ class Checker:
             if Checker.unverified_ssh_connections[conn] == 0:
                 os.system('systemctl restart ngrok.service')
                 send_message({
-                    'to': conf.get('TELEBOT', 'root_id'),
+                    'to': config.TELEGRAM_CHAT_ID,
                     'text': 'Перезагрузка ngrok'
                 })
                 Checker.unverified_ssh_connections.clear()
 
     @staticmethod
-    @cron(rule=ini_conf.get('CRONTAB', 'check_used_space'))
+    @cron(rule=config.CronTab.check_used_space)
     def check_used_space(**kwargs):
         """
         Проверка оставшегося свободного места на жестком диске
         """
-        conf = load_config()
-        max_used_space = int(conf.get('MAX_VALUES', 'max_used_space'))
+        max_used_space = config.MaxValues.max_used_space
         used_space = Monitor.get_used_space()
         name = Monitor.get_name_of_machine()
         for key, value in used_space.items():
             if value > max_used_space and Checker.block_message.get('used_space').get(key, False) is False:
                 data = dict()
-                data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
+                data['to'] = config.TELEGRAM_CHAT_ID
                 data['text'] = f'Свободное место в "{key}" на сервере {name} заканчивается. Осталось {100 - value}%'
                 send_message(data)
                 Checker.block_message['used_space'][key] = True
@@ -103,7 +101,7 @@ class Checker:
                 Checker.block_message['used_space'][key] = False
 
     @staticmethod
-    @cron(rule=ini_conf.get('CRONTAB', 'check_ip'))
+    @cron(rule=config.CronTab.check_ip)
     def check_ip(**kwargs):
         """
         Проверка изменения IP-адреса
@@ -121,7 +119,7 @@ class Checker:
                 return
         name = Monitor.get_name_of_machine()
         data = dict()
-        data['to'] = int(conf.get('CONTACT', 'telegram_chat_id'))
+        data['to'] = config.TELEGRAM_CHAT_ID
         data['text'] = f'Новый IP-адрес {name}: {new_ip}'
         send_message(data)
 
