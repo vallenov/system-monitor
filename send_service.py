@@ -3,8 +3,8 @@ import requests
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from ini_service import load_config
 from monitor import Monitor
+import config
 
 MAX_TRY = 15
 
@@ -14,11 +14,10 @@ def send_message(data: dict):
     Отправка сообщения админу
     """
     current_try = 0
-    conf = load_config()
     while current_try < MAX_TRY:
         current_try += 1
         try:
-            requests.post(conf.get('URL', 'message_server_address') + 'telegram',
+            requests.post(config.Url.message_server_address + 'telegram',
                           data=data,
                           headers={'Connection': 'close'})
         except Exception as exc:
@@ -30,12 +29,11 @@ def send_message(data: dict):
 
 
 def send_confirmation_message():
-    conf = load_config()
-    bot = telebot.TeleBot(conf.get('TELEBOT', 'token'))
+    bot = telebot.TeleBot(config.TELEGRAM_BOT_TOKEN)
     markup = InlineKeyboardMarkup()
     markup.row_width = 1
     markup.add(InlineKeyboardButton("✅ Allow/Подтвердить", callback_data="allow_connection"))
-    bot.send_message(conf.get('TELEBOT', 'root_id'),
+    bot.send_message(config.TELEGRAM_CHAT_ID,
                      f'Попытка нового подключения к {Monitor.get_name_of_machine()}',
                      reply_markup=markup)
 
