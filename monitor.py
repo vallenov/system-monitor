@@ -1,11 +1,10 @@
 import subprocess as sb
 import requests
 import json
-from ini_service import load_config
+import config
 
 
 class Monitor:
-    conf = load_config()
 
     @staticmethod
     def get_name_of_machine() -> str:
@@ -60,10 +59,10 @@ class Monitor:
     def get_ngrok_tunnels() -> dict:
         tunnels = []
         headers = {
-            'Authorization': f"Bearer {Monitor.conf['SETTINGS'].get('ngrok_token')}",
+            'Authorization': f"Bearer {config.NGROK_TOKEN}",
             'Ngrok-Version': '2'
         }
-        data = requests.get(Monitor.conf['URL'].get('ngrok_api') + 'tunnels', headers=headers)
+        data = requests.get(config.Url.ngrok_api + 'tunnels', headers=headers)
         if data.status_code == 200:
             res = json.loads(data.text)
             for tunnel in res['tunnels']:
