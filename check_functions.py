@@ -10,8 +10,6 @@ from send_service import send_message, send_confirmation_message
 from cron import cron
 import config
 
-ini_conf = load_config()
-
 
 class Checker:
 
@@ -28,7 +26,8 @@ class Checker:
         """
         Проверка превышения заданной температуры
         """
-        max_temp = config.MaxValues.max_temp
+        ini_conf = load_config()
+        max_temp = int(ini_conf.get('MAX_VALUES', 'max_temp'))
 
         temp = Monitor.get_temperature()
         if temp >= max_temp and Checker.block_message.get('temperature', False) is False:
@@ -87,7 +86,8 @@ class Checker:
         """
         Проверка оставшегося свободного места на жестком диске
         """
-        max_used_space = config.MaxValues.max_used_space
+        ini_conf = load_config()
+        max_used_space = int(ini_conf.get('MAX_VALUES', 'max_used_space'))
         used_space = Monitor.get_used_space()
         name = Monitor.get_name_of_machine()
         for key, value in used_space.items():
