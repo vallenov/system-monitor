@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import wraps
+import re
 
 date_format = ['second', 'minute', 'hour', 'day', 'month', 'weekday', 'year']
 
@@ -20,6 +21,16 @@ class CronDict(dict):
                     if other[key] not in value:
                         return False
         return True
+
+
+def validate_rule(rule: str) -> bool:
+    rule_list = rule.split()
+    if len(rule_list) != 7:
+        raise ValueError(f'Rule length is not valid ({len(rule_list)})')
+    res = re.search(r'^(\*\s|\*/\d+\s|\d+\s|(\d+,)+\d+\s){6}(\*|\*/\d+|\d+|(\d+,)+\d+)$', rule)
+    if not res or not res.group(0):
+        raise ValueError(f'Rule is not valid ({rule})')
+    return True
 
 
 def cron(rule: str = '* * * * * * *'):
