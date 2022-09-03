@@ -48,10 +48,11 @@ def cron(rule: str = '* * * * * * *'):
     :param rule: rule of activation
     :return: decorator
     """
+    validate_rule(rule)
+
     def decorator(func):
         @wraps(func)
         def wrap(*args, **kwargs):
-            validate_rule(rule)
             rule_list = rule.split()
             if len(rule_list) != 7:
                 raise ValueError('Wrong rule')
