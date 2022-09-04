@@ -12,7 +12,11 @@ def test_rule_validation():
            '1/12 * * * * * *',
            '* d * * * * *',
            '* * * * * * * *',
-           '* + * * * * *']
+           '* + * * * * *',
+           '0 q,30 */1 * * * *',
+           '0 0,gasd */1 * * * *',
+           '0 0,30 */rt * * * *',
+           '0 0,,,9 */1 * * * *']
     for rule in good:
         try:
             validate_rule(rule)

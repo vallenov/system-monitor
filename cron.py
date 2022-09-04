@@ -54,8 +54,6 @@ def cron(rule: str = '* * * * * * *'):
         @wraps(func)
         def wrap(*args, **kwargs):
             rule_list = rule.split()
-            if len(rule_list) != 7:
-                raise ValueError('Wrong rule')
             rule_dict = CronDict(zip(date_format, rule_list))
             now_dict = kwargs.get('now_dict')
             if not now_dict:
@@ -75,17 +73,9 @@ def cron(rule: str = '* * * * * * *'):
                 elif '*' in rule_dict[key]:
                     rule_dict[key] = list(map(lambda x: int(x) if x != '*' else x, rule_dict[key].split('/')))
                 elif ',' in rule_dict[key]:
-                    try:
-                        rule_dict[key] = list(map(lambda x: int(x), rule_dict[key].split(',')))
-                    except ValueError:
-                        raise ValueError('Wrong rule')
+                    rule_dict[key] = list(map(lambda x: int(x), rule_dict[key].split(',')))
                 elif len(rule_dict[key]) == 1:
-                    try:
-                        rule_dict[key] = int(rule_dict[key])
-                    except ValueError:
-                        raise ValueError('Wrong rule')
-                else:
-                    raise ValueError('Wrong rule')
+                    rule_dict[key] = int(rule_dict[key])
             if rule_dict == now_dict:
                 return func(*args, **kwargs)
         return wrap
