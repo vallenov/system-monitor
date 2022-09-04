@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import wraps
+import re
 
 date_format = ['second', 'minute', 'hour', 'day', 'month', 'weekday', 'year']
 
@@ -22,6 +23,20 @@ class CronDict(dict):
         return True
 
 
+def validate_rule(rule: str):
+    """
+    Check all rules before start app
+    :param rule: rule like '0 0,30 */1 * * * *'
+    :return: raise or None
+    """
+    rule_list = rule.split()
+    if len(rule_list) != 7:
+        raise ValueError(f'Rule length is not valid ({len(rule_list)})')
+    res = re.search(r'^(\*\s|\*/\d+\s|\d+\s|(\d+,)+\d+\s){6}(\*|\*/\d+|\d+|(\d+,)+\d+)$', rule)
+    if not res or not res.group(0):
+        raise ValueError(f'Rule is not valid ({rule})')
+
+
 def cron(rule: str = '* * * * * * *'):
     """
     Like linux cron
@@ -33,6 +48,8 @@ def cron(rule: str = '* * * * * * *'):
     :param rule: rule of activation
     :return: decorator
     """
+    validate_rule(rule)
+
     def decorator(func):
         @wraps(func)
         def wrap(*args, **kwargs):
