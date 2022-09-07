@@ -2,12 +2,12 @@ import logging
 import os
 import time
 import threading
-from datetime import datetime
 
 from monitor import Monitor
 from ini_service import load_config, ini_save
 from send_service import send_message, send_confirmation_message
 from cron import cron
+from helpers import datetime_dict
 import config
 
 
@@ -130,16 +130,7 @@ class Checker:
         """
         while True:
             try:
-                now = datetime.now()
-                now_dict = {
-                    'second': now.second,
-                    'minute': now.minute,
-                    'hour': now.hour,
-                    'day': now.day,
-                    'month': now.month,
-                    'weekday': now.weekday(),
-                    'year': now.year
-                }
+                now_dict = datetime_dict()
                 Checker.check_ip(now_dict=now_dict)
                 Checker.check_temperature(now_dict=now_dict)
                 Checker.check_ssh_connections(now_dict=now_dict)
