@@ -4,12 +4,12 @@ import os
 import subprocess as sp
 
 from monitor import Monitor
-import check_metrics
+import services.check_metrics as sc
 
 
 class MyApp(Flask):
     def __init__(self, *args, **kwargs):
-        check_metrics.Checker.run()
+        sc.Checker.run()
         super().__init__(*args, **kwargs)
 
 
@@ -89,7 +89,7 @@ def test():
 
 @app.route('/allow_connection', methods=['GET'])
 def allow_connection():
-    check_metrics.Checker.unverified_ssh_connections.clear()
+    sc.Checker.unverified_ssh_connections.clear()
     return {
         'msg': 'Соединение подтверждено'
     }
