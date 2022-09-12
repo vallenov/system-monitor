@@ -1,7 +1,5 @@
 import logging
 import os
-import time
-import threading
 
 from monitor import Monitor
 from ini_service import load_config, ini_save
