@@ -1,12 +1,31 @@
+import os
 import config
 from cron import cron
 
 
 class Backup:
 
+    @staticmethod
     @cron(rule=config.CronTab.backup)
-    def activate_backup(self):
-        pass
+    def activate_backup(**kwargs):
+        if not os.path.exists(config.BackupConf.to_dir):
+            os.mkdir(config.BackupConf.to_dir)
+        if not config.BackupConf.server_name:
+            cmd = 'cp'
+            prefix = ''
+        else:
+            cmd = 'scp'
+            prefix = config.BackupConf.server_name
+        for item in config.BackupConf.items_to_backup:
+            if os.path.isfile(item):
+                path = os.path.dirname(item)
+            else:
+                path = item.split('/')
+                path = '/'.join(path[:-1])
+                cmd = f'{cmd} -r'
+            if not os.path.exists(config.BackupConf.to_dir + path):
+                os.system(f'mkdir {config.BackupConf.to_dir + path} -p')
+            os.system(f'{cmd} {os.path.join(prefix, item)} {config.BackupConf.to_dir + path}')
 
     @staticmethod
     def run(now_dict=None):
