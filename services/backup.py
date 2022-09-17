@@ -1,6 +1,8 @@
 import os
+
 import config
 from cron import cron
+from monitor import Monitor
 
 
 class Backup:
@@ -10,12 +12,13 @@ class Backup:
     def activate_backup(**kwargs):
         if not os.path.exists(config.BackupConf.to_dir):
             os.mkdir(config.BackupConf.to_dir)
-        if not config.BackupConf.server_name:
+        if not config.BackupConf.remote_server:
             cmd = 'cp'
             prefix = ''
         else:
             cmd = 'scp'
-            prefix = config.BackupConf.server_name
+            tunnel = Monitor.get_ngrok_tunnels()
+            prefix = f"{tunnel['msg']['url']}:{tunnel['msg']['port']}"
         for item in config.BackupConf.items_to_backup:
             if os.path.isfile(item):
                 path = os.path.dirname(item)
