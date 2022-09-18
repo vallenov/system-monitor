@@ -14,11 +14,11 @@ class Backup:
             os.mkdir(config.BackupConf.to_dir)
         if not config.BackupConf.remote_server:
             cmd = 'cp'
-            prefix = ''
+            host = ''
         else:
-            cmd = 'scp'
             tunnel = Monitor.get_ngrok_tunnels()
-            prefix = f"{tunnel['msg']['url']}:{tunnel['msg']['port']}"
+            cmd = f"scp -p {tunnel['msg']['port']}"
+            host = tunnel['msg']['url']
         for item in config.BackupConf.items_to_backup:
             if os.path.isfile(item):
                 path = os.path.dirname(item)
@@ -28,7 +28,7 @@ class Backup:
                 cmd = f'{cmd} -r'
             if not os.path.exists(config.BackupConf.to_dir + path):
                 os.system(f'mkdir {config.BackupConf.to_dir + path} -p')
-            os.system(f'{cmd} {os.path.join(prefix, item)} {config.BackupConf.to_dir + path}')
+            os.system(f'{cmd} {os.path.join(host, item)} {config.BackupConf.to_dir + path}')
 
     @staticmethod
     def run(now_dict=None):
