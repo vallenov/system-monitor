@@ -1,8 +1,5 @@
 import logging
 import os
-import time
-import threading
-from datetime import datetime
 
 from monitor import Monitor
 from ini_service import load_config, ini_save
@@ -124,33 +121,8 @@ class Checker:
         send_message(data)
 
     @staticmethod
-    def check_loop():
-        """
-        Главный цикл проверки
-        """
-        while True:
-            try:
-                now = datetime.now()
-                now_dict = {
-                    'second': now.second,
-                    'minute': now.minute,
-                    'hour': now.hour,
-                    'day': now.day,
-                    'month': now.month,
-                    'weekday': now.weekday(),
-                    'year': now.year
-                }
-                Checker.check_ip(now_dict=now_dict)
-                Checker.check_temperature(now_dict=now_dict)
-                Checker.check_ssh_connections(now_dict=now_dict)
-                Checker.check_used_space(now_dict=now_dict)
-            except Exception as _ex:
-                logging.exception(f'Unrecognized exception {_ex}')
-            time.sleep(1)
-
-    @staticmethod
-    def run():
-        # хинт, что бы процессы не двоились
-        if 'WERKZEUG_RUN_MAIN' not in os.environ:
-            cl = threading.Thread(target=Checker.check_loop)
-            cl.start()
+    def run(now_dict=None):
+        Checker.check_ip(now_dict=now_dict)
+        Checker.check_temperature(now_dict=now_dict)
+        Checker.check_ssh_connections(now_dict=now_dict)
+        Checker.check_used_space(now_dict=now_dict)
