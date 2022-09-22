@@ -20,7 +20,7 @@ class Backup:
     def activate_backup(**kwargs):
         if not config.BackupConf.activate:
             return
-        if not os.path.exists(config.BackupConf.to_dir):
+        if not config.BackupConf.remote_server and not os.path.exists(config.BackupConf.to_dir):
             os.makedirs(config.BackupConf.to_dir, 0o755)
         if not os.path.exists('zip'):
             os.makedirs('zip', 0o755)
@@ -29,22 +29,22 @@ class Backup:
             host = ''
         else:
             tunnel = Monitor.get_ngrok_tunnels()
-            cmd = f"scp -p {tunnel['msg']['port']}"
-            host = tunnel['msg']['url'] + '://'
+            cmd = f"scp -P {int(tunnel['msg'][0]['port'])}"
+            host = tunnel['msg'][0]['url']
+            host = host.split('//')[1] + ':/'
         for item in config.BackupConf.items_to_backup:
             if os.path.isfile(item):
                 path = os.path.dirname(item)
             else:
                 path = item.split('/')
                 path = '/'.join(path[:-1])
-                cmd = f'{cmd} -r'
-            if not os.path.exists(config.BackupConf.to_dir + path):
+            if not config.BackupConf.remote_server and not os.path.exists(config.BackupConf.to_dir + path):
                 os.makedirs('zip/' + path, 0o755)
             os.system(f'cp {"" if os.path.isfile(item) else "-r"} {item} zip/')
         nt = now_time()
         os.system(f'zip -r {"backup_" + nt} zip/')
         os.system(f'{cmd} '
-                  f'{config.BackupConf.to_dir + "backup_" + nt + ".zip"} ' 
+                  f'{"backup_" + nt + ".zip"} ' 
                   f'{host + config.BackupConf.to_dir}')
 
     @staticmethod
