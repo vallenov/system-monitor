@@ -39,7 +39,7 @@ def validate_rule(rule: str):
 
 def cron(rule: str = '* * * * * * *'):
     """
-    Like linux cron
+    Like linux cron but with seconds
     '* * * * * * *' = every second
     '*/5 * * * * * *' = every 5 seconds
     '0 * * * * * *' = every minute
