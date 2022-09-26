@@ -18,6 +18,9 @@ class Backup:
     @staticmethod
     @cron(rule=config.CronTab.backup)
     def activate_backup(**kwargs):
+        """
+        Copy files, archive it and upload to the remote server
+        """
         if not config.BackupConf.activate:
             return
         if not config.BackupConf.remote_server and not os.path.exists(config.BackupConf.to_dir):
