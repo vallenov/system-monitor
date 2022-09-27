@@ -75,7 +75,7 @@ class Monitor:
                     'protocol': tunnel['proto'],
                     'forwards_to': tunnel['forwards_to']
                 })
-        return {'msg': tunnels}
+        return tunnels
 
     @staticmethod
     def uptime() -> dict:
@@ -87,4 +87,4 @@ class Monitor:
             'users': output[5],
             'load_average': ' '.join(output[9:])
         }
-        return {'msg': data}
+        return data
