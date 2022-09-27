@@ -83,6 +83,11 @@ def systemctl():
     }
 
 
+@app.route('/system_info', methods=['GET'])
+def system_info():
+    return {}
+
+
 @app.route('/test', methods=['GET'])
 def test():
     return {'msg': 'OK'}
