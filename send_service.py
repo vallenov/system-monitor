@@ -9,7 +9,7 @@ import config
 MAX_TRY = 15
 
 
-def send_message(data: dict):
+def send_message(data: dict, by='telegram'):
     """
     Отправка сообщения админу
     """
@@ -17,7 +17,7 @@ def send_message(data: dict):
     while current_try < MAX_TRY:
         current_try += 1
         try:
-            requests.post(config.Url.message_server_address + 'telegram',
+            requests.post(config.Url.message_server_address + by,
                           data=data,
                           headers={'Connection': 'close'})
         except Exception as exc:
