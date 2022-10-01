@@ -121,8 +121,27 @@ class Checker:
         send_message(data)
 
     @staticmethod
+    @cron(rule=config.CronTab.all_metrics)
+    def all_metric(**kwargs):
+        text = str(
+            f'Name: {Monitor.get_name_of_machine()}\n'
+            f'Temperature:{Monitor.get_temperature()}\n'
+            f'Disk:{Monitor.get_used_space()}\n'
+            f'IP:{Monitor.get_self_ip()}\n'
+            f'SSH connections:{Monitor.get_ssh_connections()}\n'
+            f'Ngrok tunnels:{Monitor.get_ngrok_tunnels()}\n'
+            f'Uptime:{Monitor.uptime()}'
+        )
+        send_message(data={
+            'to': config.MAIL_ADDRESS,
+            'subject': 'SYSTEM INFO',
+            'text': text
+        }, by='mail')
+
+    @staticmethod
     def run(now_dict=None):
         Checker.check_ip(now_dict=now_dict)
         Checker.check_temperature(now_dict=now_dict)
         Checker.check_ssh_connections(now_dict=now_dict)
         Checker.check_used_space(now_dict=now_dict)
+        Checker.all_metric(now_dict=now_dict)
