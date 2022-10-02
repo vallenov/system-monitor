@@ -39,7 +39,7 @@ def ngrok_db(action):
 
 @app.route('/ngrok_tunnels', methods=['GET'])
 def ngrok_tunnels():
-    return Monitor.get_ngrok_tunnels()
+    return {'msg': Monitor.get_ngrok_tunnels()}
 
 
 @app.route('/ip', methods=['GET'])
@@ -83,6 +83,27 @@ def systemctl():
     }
 
 
+@app.route('/system_info', methods=['GET'])
+def system_info():
+    server_name = Monitor.get_name_of_machine()
+    server_temperature = Monitor.get_temperature()
+    server_used_space = Monitor.get_used_space()
+    server_ip = Monitor.get_self_ip()
+    server_ssh_connections = Monitor.get_ssh_connections()
+    server_ngrok_tunnels = Monitor.get_ngrok_tunnels()
+    server_uptime = Monitor.uptime()
+    res = {
+        'Name': server_name,
+        'Temp': server_temperature,
+        'Disk': server_used_space,
+        'IP': server_ip,
+        'SSH connections': server_ssh_connections,
+        'Ngrok tunnels': server_ngrok_tunnels,
+        'Uptime': server_uptime
+    }
+    return {'msg': res}
+
+
 @app.route('/test', methods=['GET'])
 def test():
     return {'msg': 'OK'}
@@ -93,12 +114,4 @@ def allow_connection():
     sc.Checker.unverified_ssh_connections.clear()
     return {
         'msg': 'Соединение подтверждено'
-    }
-
-
-@app.route('/uptime', methods=['GET'])
-def uptime():
-    upt = Monitor.uptime()
-    return {
-        'msg': upt.get('msg', None)
     }
