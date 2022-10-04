@@ -16,8 +16,8 @@ class Deploy:
     def activate_deploy(**kwargs):
         for project in config.DeployConf.projects.keys():
             try:
-                curr_project_dir = os.path.join(curr_project_dir)
-                os.chdir(os.path.join(config.DeployConf.projects_dir, project))
+                curr_project_dir = os.path.join(os.path.join(config.DeployConf.projects_dir, project))
+                os.chdir(curr_project_dir)
                 pull = sp.check_output('git pull', shell=True)
                 if pull != 'Already up to date.':
                     logger.info(f'Update found for {project}')
