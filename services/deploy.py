@@ -18,7 +18,7 @@ class Deploy:
             try:
                 curr_project_dir = os.path.join(os.path.join(config.DeployConf.projects_dir, project))
                 os.chdir(curr_project_dir)
-                pull = sp.check_output('git pull', shell=True)
+                pull = sp.check_output('git pull', shell=True).decode().replace('\n', '')
                 if pull != 'Already up to date.':
                     logger.info(f'Update found for {project}')
                     if 'requirements.txt' in os.listdir(curr_project_dir):
