@@ -31,7 +31,7 @@ class Deploy:
                         else:
                             os.system(f'pyenv activate {project} && pip install -r requirements.txt')
                         os.system(f'systemctl restart {config.DeployConf.projects[project]}.service')
-                        logger.info(f'Update {project} complete')
+                        logger.info(f'Update {project} complete\n')
                     else:
                         raise FileNotFoundError('requirements.txt')
             except FileNotFoundError as e:
