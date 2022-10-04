@@ -14,6 +14,9 @@ class Deploy:
     @staticmethod
     @cron(rule=config.CronTab.deploy)
     def activate_deploy(**kwargs):
+        """
+        Autodeploy projects from GitHub
+        """
         for project in config.DeployConf.projects.keys():
             try:
                 curr_project_dir = os.path.join(os.path.join(config.DeployConf.projects_dir, project))
