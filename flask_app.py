@@ -19,6 +19,9 @@ app = MyApp(__name__)
 
 @app.route('/ngrok_<action>', methods=['GET'])
 def ngrok_ssh(action):
+    """
+    Управление сервисами ngrok
+    """
     os.system(f'systemctl {action} ngrok.service')
     res = {
         'res': 'OK',
