@@ -32,6 +32,9 @@ def ngrok_ssh(action):
 
 @app.route('/ngrok_db_<action>', methods=['GET'])
 def ngrok_db(action):
+    """
+    Управление сервисами ngrok_db
+    """
     os.system(f'systemctl {action} ngrok_db.service')
     res = {
         'res': 'OK',
