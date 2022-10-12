@@ -2,7 +2,6 @@ from flask import Flask
 from flask_restful import request
 import os
 import subprocess as sp
-import requests
 
 from monitor import Monitor
 from services.services_task import ServicesTask
@@ -13,9 +12,8 @@ class MyApp(Flask):
     def __init__(self, *args, **kwargs):
         ServicesTask.run()
         super().__init__(*args, **kwargs)
-        requests.get('http://0.0.0.0:5112/ngrok_db_stop')
-        requests.get('http://0.0.0.0:5112/ngrok_start')
-
+        os.system('systemctl stop ndrok_db.service')
+        os.system('systemctl start ndrok.service')
 
 
 app = MyApp(__name__)
