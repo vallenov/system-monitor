@@ -8,6 +8,7 @@ if __name__ == "__main__":
     logging.basicConfig(filename='run.log',
                         level=logging.INFO,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    os.system('systemctl restart TBot.service')
     app.run(host=config.FlaskSettings.host,
             port=config.FlaskSettings.port,
             debug=True,
