@@ -12,8 +12,6 @@ class MyApp(Flask):
     def __init__(self, *args, **kwargs):
         ServicesTask.run()
         super().__init__(*args, **kwargs)
-        os.system('systemctl stop ndrok_db.service')
-        os.system('systemctl start ndrok.service')
 
 
 app = MyApp(__name__)
