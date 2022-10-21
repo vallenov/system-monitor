@@ -17,36 +17,36 @@ class Deploy:
         """
         Autodeploy projects from GitHub
         """
-        for project in config.DeployConf.projects.keys():
-            Deploy.deploy_project(project)
+        for project_name, service_name in config.DeployConf.projects.items():
+            Deploy.deploy_project(project_name, service_name)
         Deploy.self_deploy()
 
     @staticmethod
-    def deploy_project(project):
+    def deploy_project(project_name, service_name):
         try:
-            curr_project_dir = os.path.join(os.path.join(config.DeployConf.projects_dir, project))
+            curr_project_dir = os.path.join(os.path.join(config.DeployConf.projects_dir, project_name))
             os.chdir(curr_project_dir)
             pull = sp.check_output('git pull', shell=True).decode().replace('\n', '')
             if pull != 'Already up to date.':
-                logger.info(f'Update found for {project}')
+                logger.info(f'Update found for {project_name}')
                 if 'requirements.txt' in os.listdir(curr_project_dir):
                     logger.info('Updating...')
                     if '.venv' in os.listdir(curr_project_dir):
                         os.system('. ./.venv/bin/activate && ./.venv/bin/pip install -r requirements.txt')
                     else:
-                        os.system(f'pyenv activate {project} && pip install -r requirements.txt')
-                    os.system(f'systemctl restart {config.DeployConf.projects[project]}.service')
-                    logger.info(f'Update {project} complete\n')
+                        os.system(f'pyenv activate {project_name} && pip install -r requirements.txt')
+                    os.system(f'systemctl restart {service_name}.service')
+                    logger.info(f'Update {project_name} complete\n')
                 else:
                     raise FileNotFoundError('requirements.txt')
             else:
-                logger.info(f'Update not found for {project}')
+                logger.info(f'Update not found for {project_name}')
         except FileNotFoundError as e:
             logger.exception()
 
     @staticmethod
     def self_deploy():
-        Deploy.deploy_project({'system-monitor': 'system_monitor'})
+        Deploy.deploy_project('system-monitor', 'system_monitor')
 
     @staticmethod
     def run(now_dict=None):
