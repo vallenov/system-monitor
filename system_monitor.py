@@ -12,4 +12,3 @@ if __name__ == "__main__":
             debug=True,
             threaded=True,
             use_reloader=False)
-
