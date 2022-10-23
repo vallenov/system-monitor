@@ -41,7 +41,7 @@ class Deploy:
                     raise FileNotFoundError('requirements.txt')
             else:
                 logger.info(f'Update not found for {project_name}')
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             logger.exception()
 
     @staticmethod
