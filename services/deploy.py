@@ -6,7 +6,7 @@ import config
 from cron import cron
 from loggers import get_logger
 
-logger = get_logger(__name__, 'deploy.log')
+logger = get_logger(__name__)
 
 
 class Deploy:
