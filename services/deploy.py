@@ -51,3 +51,7 @@ class Deploy:
     @staticmethod
     def run(now_dict=None):
         Deploy.activate_deploy(now_dict=now_dict)
+
+
+if __name__ == "__main__":
+    Deploy.deploy_project('system-monitor', 'system_monitor')
