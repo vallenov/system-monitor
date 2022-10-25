@@ -1,20 +1,10 @@
-from flask import Flask
 from flask_restful import request
 import os
 import subprocess as sp
 
 from monitor import Monitor
-from services.services_task import ServicesTask
 import services.check_metrics as sc
-
-
-class MyApp(Flask):
-    def __init__(self, *args, **kwargs):
-        ServicesTask.run()
-        super().__init__(*args, **kwargs)
-
-
-app = MyApp(__name__)
+from app import app
 
 
 @app.route('/ngrok_<action>', methods=['GET'])
