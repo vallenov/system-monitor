@@ -1,7 +1,7 @@
 import logging
 
 logging.basicConfig(level=logging.INFO)
-
+root_logger = logging.getLogger()
 
 def get_logger(name: str, file_name: str = 'run.log'):
     logger = logging.getLogger(name)
@@ -9,4 +9,5 @@ def get_logger(name: str, file_name: str = 'run.log'):
     handler.setLevel(logging.INFO)
     handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
     logger.addHandler(handler)
+    logger.info(handler)
     return logger
