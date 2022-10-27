@@ -10,4 +10,5 @@ def get_logger(name: str, file_name: str = 'run.log'):
     handler.setLevel(logging.INFO)
     handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
     logger.addHandler(handler)
+    logger.info(handler)
     return logger
