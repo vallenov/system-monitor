@@ -46,6 +46,9 @@ class Deploy:
 
     @staticmethod
     def self_deploy():
+        """
+        Деплой самого проекта
+        """
         Deploy.deploy_project('system-monitor', 'system_monitor')
 
     @staticmethod
