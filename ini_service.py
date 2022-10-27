@@ -1,9 +1,12 @@
 import configparser
+import os
+
+import config as cfg
 
 
 def load_config():
     config = configparser.ConfigParser()
-    config.read('system_monitor.ini', encoding='utf-8')
+    config.read(os.path.join(cfg.WORK_DIR, 'system_monitor.ini'), encoding='utf-8')
     return config
 
 
