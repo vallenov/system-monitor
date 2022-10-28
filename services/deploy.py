@@ -53,4 +53,5 @@ class Deploy:
 
     @staticmethod
     def run(now_dict=None):
-        Deploy.activate_deploy(now_dict=now_dict)
+        if config.DeployConf.activate:
+            Deploy.activate_deploy(now_dict=now_dict)
