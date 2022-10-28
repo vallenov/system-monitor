@@ -21,8 +21,6 @@ class Backup:
         """
         Copy files, archive it and upload to the remote server
         """
-        if not config.BackupConf.activate:
-            return
         if not config.BackupConf.remote_server and not os.path.exists(config.BackupConf.to_dir):
             os.makedirs(config.BackupConf.to_dir, 0o755)
         if not os.path.exists('zip'):
@@ -52,4 +50,5 @@ class Backup:
 
     @staticmethod
     def run(now_dict=None):
-        Backup.activate_backup(now_dict=now_dict)
+        if config.BackupConf.activate:
+            Backup.activate_backup(now_dict=now_dict)
