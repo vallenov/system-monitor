@@ -26,6 +26,9 @@ class Monitor:
 
     @staticmethod
     def get_used_space() -> dict:
+        """
+        Get used space on server
+        """
         output = sb.check_output(r"df -h | grep [[:digit:]][[:lower:]][[:digit:]] | awk '{print $6, $5}'", shell=True)
         output = output.decode().split('\n')
         output = list(filter(lambda line: len(line) > 0, output))
@@ -37,6 +40,9 @@ class Monitor:
 
     @staticmethod
     def get_self_ip() -> str or None:
+        """
+        Get server's ip
+        """
         output = sb.check_output("ifconfig | "
                                  "grep `ifconfig -s | "
                                  "grep '\<w.*' | "
@@ -48,6 +54,9 @@ class Monitor:
 
     @staticmethod
     def get_ssh_connections() -> list:
+        """
+        Get list of server connections
+        """
         output = sb.check_output(r"ss -o state established '( dport = :ssh or sport = :ssh )' "
                                  r"| awk '{print $5}' "
                                  r"| grep -v ssh", shell=True)
@@ -56,7 +65,10 @@ class Monitor:
         return output
 
     @staticmethod
-    def get_ngrok_tunnels() -> dict:
+    def get_ngrok_tunnels() -> list:
+        """
+        Get current ngrok tunnels
+        """
         tunnels = []
         headers = {
             'Authorization': f"Bearer {config.NGROK_TOKEN}",
@@ -79,6 +91,9 @@ class Monitor:
 
     @staticmethod
     def uptime() -> dict:
+        """
+        Get uptime info
+        """
         output = sb.check_output('uptime')
         output = output.decode().split()
         data = {
