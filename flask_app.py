@@ -20,6 +20,19 @@ def ngrok_ssh(action):
     return res
 
 
+@app.route('/serveo_ssh_<action>', methods=['GET'])
+def serveo_ssh(action):
+    """
+    Управление сервисами serveo
+    """
+    os.system(f'systemctl {action} serveo_ssh.service')
+    res = {
+        'res': 'OK',
+        'msg': f'Serveo {action}'
+    }
+    return res
+
+
 @app.route('/ngrok_db_<action>', methods=['GET'])
 def ngrok_db(action):
     """
