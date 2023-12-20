@@ -27,5 +27,5 @@ then
   python system_monitor.py
 else
   # ~/.pyenv/versions/MessageSender/bin/flask run --host=0.0.0.0 --port=5112
-  ~/.pyenv/versions/MessageSender/bin/python system_monitor.py
+  ~/.pyenv/versions/system-monitor/bin/python system_monitor.py
 fi
