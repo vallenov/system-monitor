@@ -132,11 +132,14 @@ class Checker:
             f'Ngrok tunnels:{Monitor.get_ngrok_tunnels()}\n'
             f'Uptime:{Monitor.uptime()}'
         )
-        send_message(data={
-            'to': config.MAIL_ADDRESS,
-            'subject': 'SYSTEM INFO',
-            'text': text
-        }, by='mail')
+        send_message(
+            data={
+                'to': config.MAIL_ADDRESS,
+                'subject': 'SYSTEM INFO',
+                'text': text
+            },
+            by='mail'
+        )
 
     @staticmethod
     def run(now_dict=None):
